@@ -37,7 +37,7 @@ Update this file after every meaningful implementation change.
   - Created `components/editor/project-sidebar.tsx`:
     - Floating left sidebar (`fixed top-14 left-0 bottom-0 z-40 w-80`) positioned above the editor canvas so opening it does not push page content
     - Smooth slide-in animation from the left (`transition-transform duration-300 ease-in-out`)
-    - Accepts `isOpen`, `onClose`, and `onNewProject` props
+    - Accepts `isOpen` and `onClose` props
     - Top header with `Projects` title and close button (`X` icon)
     - shadcn `Tabs` with "My projects" and "Shared"
     - Empty placeholder states for both tabs
@@ -48,6 +48,10 @@ Update this file after every meaningful implementation change.
     - Ready for future feature dialogs without building premature actual dialogs
   - Created `components/editor/index.ts` barrel export
   - Connected chrome components in `app/page.tsx` for layout preview and interactive sidebar toggle
+  - Refined focus management and accessibility:
+    - Added `inert={!isOpen ? true : undefined}` to `ProjectSidebar` to remove closed sidebar from Tab keyboard navigation
+    - Added focus return logic to navbar toggle when closing from inside the sidebar (via close button or Escape key)
+    - Added opener focus restoration in `EditorDialog` via `onCloseAutoFocus` when `trigger` is omitted, capturing previous active element
   - Verified TypeScript compilation (`tsc`) passes without errors
   - Verified ESLint (`npm run lint`) passes without errors
 

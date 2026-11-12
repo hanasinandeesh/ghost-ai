@@ -21,11 +21,13 @@ export interface EditorDialogProps {
   footerActions?: React.ReactNode
   trigger?: React.ReactNode
   className?: string
+  onCloseAutoFocus?: (event: Event) => void
 }
 
 /**
  * Reusable Dialog Pattern component configured with workspace color tokens.
  * Supports title, description, content body, and footer actions.
+ * Restores focus to the opener element when trigger is omitted.
  */
 export function EditorDialog({
   open,
@@ -36,11 +38,36 @@ export function EditorDialog({
   footerActions,
   trigger,
   className,
+  onCloseAutoFocus,
 }: EditorDialogProps) {
+  const openerRef = React.useRef<HTMLElement | null>(null)
+
+  React.useEffect(() => {
+    if (open) {
+      openerRef.current = document.activeElement as HTMLElement | null
+    }
+  }, [open])
+
+  const handleCloseAutoFocus = React.useCallback(
+    (event: Event) => {
+      if (onCloseAutoFocus) {
+        onCloseAutoFocus(event)
+        if (event.defaultPrevented) return
+      }
+
+      if (!trigger && openerRef.current) {
+        event.preventDefault()
+        openerRef.current.focus()
+      }
+    },
+    [onCloseAutoFocus, trigger]
+  )
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent
+        onCloseAutoFocus={handleCloseAutoFocus}
         className={cn(
           "border-border bg-card text-card-foreground sm:max-w-md",
           className
@@ -62,4 +89,3 @@ export function EditorDialog({
 }
 
 export default EditorDialog
-

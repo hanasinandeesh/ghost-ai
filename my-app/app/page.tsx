@@ -6,10 +6,12 @@ import { ProjectSidebar } from "@/components/editor/project-sidebar"
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
+  const toggleButtonRef = React.useRef<HTMLButtonElement | null>(null)
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background text-foreground">
       <EditorNavbar
+        toggleButtonRef={toggleButtonRef}
         isSidebarOpen={sidebarOpen}
         onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
       />
@@ -19,6 +21,7 @@ export default function Home() {
         <ProjectSidebar
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
+          toggleButtonRef={toggleButtonRef}
         />
 
         {/* Editor Canvas */}

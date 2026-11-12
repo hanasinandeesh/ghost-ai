@@ -10,6 +10,7 @@ export interface EditorNavbarProps extends React.ComponentProps<"header"> {
   onToggleSidebar?: () => void
   centerContent?: React.ReactNode
   rightContent?: React.ReactNode
+  toggleButtonRef?: React.RefObject<HTMLButtonElement | null>
 }
 
 export function EditorNavbar({
@@ -17,6 +18,7 @@ export function EditorNavbar({
   onToggleSidebar,
   centerContent,
   rightContent,
+  toggleButtonRef,
   className,
   ...props
 }: EditorNavbarProps) {
@@ -32,6 +34,8 @@ export function EditorNavbar({
       {/* Left Section: Sidebar toggle button */}
       <div className="flex items-center gap-2" data-slot="editor-navbar-left">
         <Button
+          ref={toggleButtonRef}
+          data-slot="sidebar-toggle"
           variant="ghost"
           size="icon"
           onClick={onToggleSidebar}

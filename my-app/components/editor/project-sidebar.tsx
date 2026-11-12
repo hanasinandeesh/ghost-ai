@@ -10,19 +10,51 @@ export interface ProjectSidebarProps extends React.ComponentProps<"aside"> {
   isOpen: boolean
   onClose?: () => void
   onNewProject?: () => void
+  toggleButtonRef?: React.RefObject<HTMLButtonElement | null>
 }
 
 export function ProjectSidebar({
   isOpen,
   onClose,
   onNewProject,
+  toggleButtonRef,
   className,
+  onKeyDown,
   ...props
 }: ProjectSidebarProps) {
+  const returnFocusToToggle = React.useCallback(() => {
+    if (toggleButtonRef?.current) {
+      toggleButtonRef.current.focus()
+    } else {
+      const toggle = document.querySelector<HTMLButtonElement>(
+        '[data-slot="sidebar-toggle"], [data-slot="editor-navbar-left"] button'
+      )
+      toggle?.focus()
+    }
+  }, [toggleButtonRef])
+
+  const handleClose = React.useCallback(() => {
+    onClose?.()
+    returnFocusToToggle()
+  }, [onClose, returnFocusToToggle])
+
+  const handleKeyDown = React.useCallback(
+    (e: React.KeyboardEvent<HTMLElement>) => {
+      if (e.key === "Escape" && isOpen) {
+        e.preventDefault()
+        handleClose()
+      }
+      onKeyDown?.(e)
+    },
+    [handleClose, isOpen, onKeyDown]
+  )
+
   return (
     <aside
       data-slot="project-sidebar"
       aria-hidden={!isOpen}
+      inert={!isOpen ? true : undefined}
+      onKeyDown={handleKeyDown}
       className={cn(
         "fixed top-14 left-0 bottom-0 z-40 flex w-80 flex-col border-r border-border bg-card text-card-foreground shadow-2xl transition-transform duration-300 ease-in-out",
         isOpen ? "translate-x-0" : "-translate-x-full pointer-events-none",
@@ -38,7 +70,7 @@ export function ProjectSidebar({
         <Button
           variant="ghost"
           size="icon"
-          onClick={onClose}
+          onClick={handleClose}
           aria-label="Close sidebar"
           title="Close sidebar"
           className="size-8"
@@ -99,4 +131,3 @@ export function ProjectSidebar({
 }
 
 export default ProjectSidebar
-
