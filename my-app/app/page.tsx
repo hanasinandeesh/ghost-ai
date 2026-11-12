@@ -1,12 +1,34 @@
-import { Button } from "@/components/ui/button";
+"use client"
+
+import * as React from "react"
+import { EditorNavbar } from "@/components/editor/editor-navbar"
+import { ProjectSidebar } from "@/components/editor/project-sidebar"
 
 export default function Home() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4">
-      <div className="text-xl font-medium">ghost ai</div>
-      <Button>click me</Button>
-    </div>
-  );
+  const [sidebarOpen, setSidebarOpen] = React.useState(false)
 
-  
+  return (
+    <div className="relative flex min-h-screen flex-col bg-background text-foreground">
+      <EditorNavbar
+        isSidebarOpen={sidebarOpen}
+        onToggleSidebar={() => setSidebarOpen((prev) => !prev)}
+      />
+
+      <div className="relative flex flex-1 overflow-hidden">
+        {/* Floating Project Sidebar */}
+        <ProjectSidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+        />
+
+        {/* Editor Canvas */}
+        <main className="flex flex-1 items-center justify-center p-8">
+          <div className="text-center">
+            <h1 className="text-xl font-medium">ghost ai</h1>
+            <p className="mt-1 text-sm text-muted-foreground">Editor Canvas</p>
+          </div>
+        </main>
+      </div>
+    </div>
+  )
 }
